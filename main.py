@@ -38,6 +38,11 @@ class SoilReading(BaseModel):
     temperature_c: Optional[float] = Field(default=None, ge=-40, le=85)
     pressure_hpa: Optional[float] = Field(default=None, ge=300, le=1100)
 
+    # NPK fields (optional: omitted if Modbus reading fails).
+    nitrogen_mg_kg: Optional[int] = None
+    phosphorus_mg_kg: Optional[int] = None
+    potassium_mg_kg: Optional[int] = None
+
     timestamp: datetime = Field(
         default_factory=lambda: datetime.now(timezone.utc)
     )
@@ -69,6 +74,9 @@ def create_reading(reading: SoilReading):
         "id": str(result.inserted_id),
         "device_id": reading.device_id,
         "soil_moisture_raw": reading.raw,
+        "nitrogen_mg_kg": reading.nitrogen_mg_kg,
+        "phosphorus_mg_kg": reading.phosphorus_mg_kg,
+        "potassium_mg_kg": reading.potassium_mg_kg,
         "temperature_c": reading.temperature_c,
         "pressure_hpa": reading.pressure_hpa,
         "timestamp": reading.timestamp.isoformat(),
