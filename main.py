@@ -29,10 +29,13 @@ app = FastAPI(
 
 class SoilReading(BaseModel):
     device_id: str = "NUTRIX_001"
-    sensor: str = "soil_moisture"
+    sensor: str = "nutrix_multiparameter"
     raw: int = Field(ge=0, le=4095)
     unit: str = "adc"
     moisture_percent: Optional[float] = None
+
+    # pH field
+    ph_value: Optional[float] = None
 
     # BMP280 fields (optional: the ESP32 omits them if the sensor fails).
     temperature_c: Optional[float] = Field(default=None, ge=-40, le=85)
@@ -74,6 +77,7 @@ def create_reading(reading: SoilReading):
         "id": str(result.inserted_id),
         "device_id": reading.device_id,
         "soil_moisture_raw": reading.raw,
+        "ph_value": reading.ph_value,
         "nitrogen_mg_kg": reading.nitrogen_mg_kg,
         "phosphorus_mg_kg": reading.phosphorus_mg_kg,
         "potassium_mg_kg": reading.potassium_mg_kg,
